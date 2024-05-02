@@ -447,10 +447,7 @@
 			const data = await response.json();
 			const id = data.id;
 			const qrCodeUrl = `https://kaspi.kz/pay/NSCompany?service_id=6692&10661=${id}`;
-			const payBtn = getElementById('pay-kaspi')
-			payBtn.onclick = function() { 
-				window.open(qrCodeUrl);
-			}
+
 
 			const qrBlock = document.getElementById('qrcode');
 			qrBlock.innerHTML = '';
