@@ -452,7 +452,6 @@
 			const qrBlock = document.getElementById('qrcode');
 			qrBlock.innerHTML = '';
 
-			// Создаем QR-код
 			const qrcode = new QRCode(qrBlock, {
 				text: qrCodeUrl,
 				width: 300,
@@ -462,12 +461,10 @@
 				correctLevel: QRCode.CorrectLevel.H
 			});
 
-			// Создаем логотип
 			const logo = document.createElement('div');
 			logo.className = 'logo';
 			logo.innerHTML = '<img src="https://firebasestorage.googleapis.com/v0/b/forpay-9f645.appspot.com/o/1%2Flogo.png?alt=media&token=e83b5089-a86b-4db6-bb70-d0e830dc8e8c" alt="">';
 
-			// Помещаем логотип в блок с QR-кодом
 			qrBlock.appendChild(logo);
 
 			return id;
@@ -489,8 +486,9 @@
 				if (data === true) {
 					clearInterval(interval);
 					document.getElementById('kaspi-qr-popup').style.display = 'none';
-					alert("Поздравляем, мы приняли ваш заказ. Ждем вас!");
-				} else if (++count >= 150) { // 150 * 2 секунд = 5 минут
+					displayFormData()
+					// alert("Поздравляем, мы приняли ваш заказ. Ждем вас!");
+				} else if (++count >= 150) { 
 					clearInterval(interval);
 					document.getElementById('kaspi-qr-popup').style.display = 'none';
 				}
@@ -499,6 +497,48 @@
 			}
 		}, 2000);
 	}
+
+
+
+	function displayFormData() {
+		const formData = new FormData(document.getElementById('booking-form'));
+		const totalPriceInput = document.getElementById('total-price');
+		const totalPrice = totalPriceInput.value;
+
+		const productSelect = document.getElementById('product');
+		const selectedProduct = productSelect.options[productSelect.selectedIndex];
+		
+		const data = {
+			date: formData.get('date'),
+			name: formData.get('name'),
+			phone: formData.get('phone'),
+			tickets: formData.get('tickets'),
+			totalPrice: totalPrice,
+			selectedProductName: selectedProduct.text,
+			selectedProductValue: selectedProduct.value
+		};
+
+		fetch('https://script.google.com/macros/s/AKfycbyW_JMRCbogfvry_IdztASkv7iYU-Cgq9FkxFVoRHW8wzp3PXWlckxA9JGcGXG_MBQW/exec', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+		.then(response => {
+			if (response.ok) {
+				console.log('Данные успешно отправлены в Google Таблицу.');
+				alert("Поздравляем, мы приняли ваш заказ. Ждем вас!");
+			} else {
+				console.error('Ошибка при отправке данных в Google Таблицу:', response.statusText);
+				alert("ошибка попробуйте позже");
+			}
+		})
+		.catch(error => {
+			console.error('Ошибка при отправке данных в Google Таблицу:', error);
+		});
+	}
+
 
 </script>
 
