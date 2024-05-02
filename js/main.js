@@ -441,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function () {
             gallery.appendChild(galleryItem);
 
             const option = document.createElement('option');
-            option.value = item.id;
+            option.value = item.image;
             option.textContent = `${item.name} - ${item.price}`;
             select.appendChild(option);
         });
